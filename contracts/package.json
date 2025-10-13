@@ -1,0 +1,17 @@
+{
+  "name": "@booking/contracts",
+  "version": "1.0.0",
+  "description": "Shared Zod schemas for Booking system",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

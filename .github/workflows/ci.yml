@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: |
+          web/package-lock.json
+          contracts/package-lock.json
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install Python dependencies
+      run: |
+        cd api
+        pip install -r requirements.txt
+    
+    - name: Install Node.js dependencies
+      run: |
+        cd web && npm ci
+        cd ../contracts && npm ci
+    
+    - name: Run Python linting
+      run: |
+        cd api
+        python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Run Python type checking
+      run: |
+        cd api
+        python -m mypy . --ignore-missing-imports
+    
+    - name: Run Node.js linting
+      run: |
+        cd web && npm run lint
+        cd ../contracts && npm run typecheck
+    
+    - name: Run Node.js type checking
+      run: |
+        cd web && npm run typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd api
+        pip install -r requirements.txt
+    
+    - name: Run API tests
+      run: |
+        cd api
+        python -m pytest
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
