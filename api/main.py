@@ -3,9 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import os
 
-# Import routers (to be created)
-# from app.routers import health, users, bookings
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
@@ -37,11 +34,6 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "service": "api"}
-
-# Include routers
-# app.include_router(health.router)
-# app.include_router(users.router, prefix="/users", tags=["users"])
-# app.include_router(bookings.router, prefix="/bookings", tags=["bookings"])
 
 if __name__ == "__main__":
     import uvicorn
