@@ -7,6 +7,7 @@ import sys
 
 # Add the parent directory to the path so we can import our models
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from app.models import Base  # type: ignore
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -21,7 +22,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
