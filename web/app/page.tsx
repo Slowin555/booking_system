@@ -8,12 +8,20 @@ export default function Home() {
           Welcome to&nbsp;
           <code className="font-mono font-bold">Booking System</code>
         </p>
-        <Link
-          href="/login"
-          className="hidden lg:inline-flex rounded-md bg-black text-white dark:bg-white dark:text-black px-4 py-2 hover:opacity-90"
-        >
-          Login
-        </Link>
+        <div className="hidden lg:flex gap-2">
+          <Link
+            href="/login"
+            className="rounded-md bg-black text-white dark:bg-white dark:text-black px-4 py-2 hover:opacity-90"
+          >
+            Login
+          </Link>
+          <Link
+            href="/register"
+            className="rounded-md border border-black dark:border-white px-4 py-2 hover:opacity-90"
+          >
+            Register
+          </Link>
+        </div>
       </div>
 
       <div className="relative flex place-items-center">

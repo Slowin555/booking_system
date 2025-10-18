@@ -35,6 +35,30 @@ async def root():
 async def health_check():
     return {"status": "ok", "service": "api"}
 
+# Routers
+from app.auth.register import router as register_router  # noqa: E402
+from app.auth.login import router as login_router  # noqa: E402
+from app.auth.logout import router as logout_router  # noqa: E402
+from app.auth.me import router as me_router  # noqa: E402
+from app.auth.refresh import router as refresh_router  # noqa: E402
+from app.auth.ratelimit import limiter  # noqa: E402
+from slowapi.errors import RateLimitExceeded  # noqa: E402
+from slowapi.middleware import SlowAPIMiddleware  # noqa: E402
+
+app.include_router(register_router)
+app.include_router(login_router)
+app.include_router(logout_router)
+app.include_router(me_router)
+app.include_router(refresh_router)
+
+# Rate limiting
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+
+@app.exception_handler(RateLimitExceeded)
+async def ratelimit_handler(request, exc):
+    return await limiter._rate_limit_exceeded_handler(request, exc)
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

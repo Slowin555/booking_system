@@ -12,3 +12,6 @@ pytest==7.4.3
 pytest-asyncio==0.21.1
 flake8==6.1.0
 mypy==1.7.1
+passlib[bcrypt]==1.7.4
+python-jose==3.3.0
+slowapi==0.1.9
