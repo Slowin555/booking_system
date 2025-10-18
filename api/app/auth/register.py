@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pydantic import BaseModel, EmailStr, Field
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy import select
