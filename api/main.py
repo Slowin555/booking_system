@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import os
@@ -25,6 +26,7 @@ allowed_origins = [frontend_origin, "http://web:3000"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=os.getenv("FRONTEND_ORIGIN_REGEX", r"^https://.*\\.app\\.github\\.dev$"),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,6 +39,11 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "service": "api"}
+
+# Ensure CORS preflight always gets a 204 and passes through CORS middleware
+@app.options("/{rest_of_path:path}")
+async def cors_preflight(rest_of_path: str):
+    return Response(status_code=204)
 
 # Routers
 from app.auth.register import router as register_router  # noqa: E402
