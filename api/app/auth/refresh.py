@@ -29,7 +29,7 @@ def refresh(
     if not subject:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
     new_access = create_access_token(settings, subject)
-    response.set_cookie("access_token", new_access, httponly=True, samesite="lax")
+    response.set_cookie("access_token", new_access, httponly=True, samesite="none", secure=True)
     return {"ok": True}
 
 

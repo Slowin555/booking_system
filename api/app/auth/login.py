@@ -33,8 +33,10 @@ def login(
     access = create_access_token(settings, str(user.id))
     refresh = create_refresh_token(settings, str(user.id))
     # HttpOnly cookies
-    response.set_cookie("access_token", access, httponly=True, samesite="lax")
-    response.set_cookie("refresh_token", refresh, httponly=True, samesite="lax")
+    # In Codespaces (https), cookies must be Secure and SameSite=None for cross-site
+    secure = True
+    response.set_cookie("access_token", access, httponly=True, samesite="none", secure=secure)
+    response.set_cookie("refresh_token", refresh, httponly=True, samesite="none", secure=secure)
     return {"ok": True}
 
 
