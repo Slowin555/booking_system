@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pydantic import BaseModel, EmailStr
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Request
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -23,6 +23,7 @@ class LoginBody(BaseModel):
 @router.post("/login")
 @limiter.limit("5/minute")
 def login(
+    request: Request,
     body: LoginBody,
     response: Response,
     session: Session = Depends(get_session),

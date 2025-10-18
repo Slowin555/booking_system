@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status, Request
 
 from .security import JWTSettings, create_access_token, decode_token
 from .deps import get_jwt_settings
@@ -15,6 +15,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/refresh")
 @limiter.limit("5/minute")
 def refresh(
+    request: Request,
     response: Response,
     settings: JWTSettings = Depends(get_jwt_settings),
     refresh_token: Optional[str] = Cookie(default=None, alias="refresh_token"),
